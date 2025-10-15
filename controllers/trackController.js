@@ -179,7 +179,7 @@ const createTrack = async (req, res) => {
       genre,
       contributors,
       listenCount,
-      publishDate,
+      publishDate, // Add publishDate
       bitrate,
       duration,
       sampleRate,
@@ -187,12 +187,12 @@ const createTrack = async (req, res) => {
       album,
       trackNumber
     } = req.body;
-    
+
     // Validate required fields
     if (!title || !type || !genre) {
       return res.status(400).json({ message: 'Title, type, and genre are required' });
     }
-    
+
     // Parse contributors if it's a string
     let parsedContributors = [];
     if (contributors) {
@@ -202,13 +202,13 @@ const createTrack = async (req, res) => {
         parsedContributors = [];
       }
     }
-    
+
     // Handle file uploads
     let coverImage = '';
     let audioFile = '';
     let coverImageDimensions = { width: 0, height: 0 };
     let audioMetadata = { bitrate: 0, duration: 0, sampleRate: 0, fileType: '' };
-    
+
     // Process uploaded files
     if (req.files) {
       for (const file of req.files) {
@@ -234,13 +234,13 @@ const createTrack = async (req, res) => {
         }
       }
     }
-    
+
     // If no cover image was provided, use a placeholder
     if (!coverImage) {
       coverImage = 'placeholder-image.svg'; // Default placeholder
       coverImageDimensions = { width: 3000, height: 3000 }; // Default dimensions
     }
-    
+
     // Create track object
     const trackData = {
       title,
@@ -248,13 +248,13 @@ const createTrack = async (req, res) => {
       genre,
       contributors: parsedContributors,
       listenCount: listenCount ? parseInt(listenCount) : 0,
-      publishDate: publishDate ? new Date(publishDate) : new Date(),
+      publishDate: publishDate ? new Date(publishDate) : new Date(), // Add publishDate
       coverImage,
       coverImageDimensions,
       album: album || null, // Set album reference if provided
       trackNumber: trackNumber ? parseInt(trackNumber) : undefined
     };
-    
+
     // Only add audio-related fields for Single tracks
     if (type === 'Single') {
       trackData.audioFile = audioFile;
@@ -263,10 +263,10 @@ const createTrack = async (req, res) => {
       trackData.sampleRate = audioMetadata.sampleRate || (sampleRate ? parseInt(sampleRate) : 0);
       trackData.fileType = audioMetadata.fileType || fileType || '';
     }
-    
+
     const track = new Track(trackData);
     const createdTrack = await track.save();
-    
+
     res.status(201).json(createdTrack);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -292,7 +292,7 @@ const updateTrack = async (req, res) => {
       listenCount,
       publishDate
     } = req.body;
-    
+
     // Parse contributors if it's a string
     let parsedContributors = track.contributors;
     if (contributors) {
@@ -302,14 +302,14 @@ const updateTrack = async (req, res) => {
         // Keep existing contributors if parsing fails
       }
     }
-    
+
     track.title = title || track.title;
     track.type = type || track.type;
     track.genre = genre || track.genre;
     track.contributors = parsedContributors;
     track.listenCount = listenCount !== undefined ? parseInt(listenCount) : track.listenCount;
-    track.publishDate = publishDate ? new Date(publishDate) : track.publishDate;
-    
+    track.publishDate = publishDate ? new Date(publishDate) : track.publishDate; // Add publishDate
+
     // Handle file uploads if any
     if (req.files) {
       for (const file of req.files) {
@@ -349,7 +349,7 @@ const updateTrack = async (req, res) => {
         }
       }
     }
-    
+
     const updatedTrack = await track.save();
     res.json(updatedTrack);
   } catch (error) {
