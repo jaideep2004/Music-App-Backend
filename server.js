@@ -16,117 +16,36 @@ connectDB();
 // Create Express app
 const app = express();
 
-// CORS configuration - Allow all origins with maximum permissiveness
+// CORS configuration
 const corsOptions = {
-  origin: true, // Reflect the request origin
+  origin: ['http://localhost:5173', 'https://orangemusicindia.com'], // Allow frontend origins
   credentials: true,
-  optionsSuccessStatus: 200,
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'Content-Disposition'],
-  preflightContinue: false
+  optionsSuccessStatus: 200
 };
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
-
-// Explicitly handle preflight requests
-app.options('*', cors(corsOptions));
-
-// Additional CORS headers middleware to override any server restrictions
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
-  res.header('Access-Control-Expose-Headers', 'Content-Disposition, Content-Length, X-Requested-With');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Max-Age', '86400');
-    return res.status(204).json();
-  }
-  
-  next();
-});
+// Apply CORS middleware to all routes
+app.use(cors());
 
 // Custom CORS headers for static files
-app.use('/uploads', cors(corsOptions), express.static('uploads'));
+app.use('/uploads', (req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Origin', 'https://orangemusicindia.com');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+}, express.static('uploads'));
 
-// Middleware - Set maximum limits for file uploads
+// Middleware
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
-
-// Set maximum payload size - this is critical for Hostinger
-app.use(express.json({ 
-  limit: '200mb',
-  type: 'application/json'
-}));
-
-app.use(express.urlencoded({ 
-  extended: true, 
-  limit: '200mb',
-  type: 'application/x-www-form-urlencoded'
-}));
-
-// Handle raw body for multipart/form-data (file uploads)
-app.use(express.raw({ 
-  limit: '200mb',
-  type: 'multipart/form-data'
-}));
+app.use(express.json({ limit: '200mb' })); // Parse JSON bodies
+// app.use(express.urlencoded({ extended: true, limit: '50mb' })); 
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tracks', trackRoutes);
-
-// Test CORS endpoint
-app.get('/test-cors', (req, res) => {
-  res.json({ 
-    message: 'CORS is working!',
-    origin: req.headers.origin,
-    headers: req.headers
-  });
-});
-
-// Test tracks endpoint CORS specifically
-app.post('/test-tracks-cors', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
-  
-  res.json({ 
-    message: 'Tracks CORS test successful!',
-    origin: req.headers.origin,
-    headers: req.headers
-  });
-});
-
-// Root route
 app.get('/', (req, res) => {
-  res.json({ message: 'Music Platform API updated 16 oct v3' });
-});
-
-// Global error handler to ensure CORS headers are always set
-app.use((err, req, res, next) => {
-  // Ensure CORS headers are set even in error responses
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
-  
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'production' ? {} : err.message
-  });
-});
-
-// 404 handler
-app.use((req, res) => {
-  // Ensure CORS headers are set even in 404 responses
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.status(404).json({ message: 'Route not found' });
+  res.json({ message: 'Music Platform API updated 16 oct' });
 });
 
 // Server port
