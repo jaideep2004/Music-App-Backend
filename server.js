@@ -29,11 +29,11 @@ app.use(cors(corsOptions));
 // Custom CORS headers for static files
 app.use('/uploads', cors(corsOptions), express.static('uploads'));
 
-// Middleware
+// Middleware - No limits
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
-app.use(express.json({ limit: '1000mb' })); // Increased limit for JSON bodies
-app.use(express.urlencoded({ extended: true, limit: '1000mb' })); // Increased limit for URL encoded data
+app.use(express.json()); // No limit for JSON bodies
+app.use(express.urlencoded({ extended: true })); // No limit for URL encoded data
 
 // Routes
 app.use('/api/auth', authRoutes);
