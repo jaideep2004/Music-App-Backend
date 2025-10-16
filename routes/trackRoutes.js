@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const { 
   getTracks, 
   searchTracks,
@@ -33,10 +34,34 @@ router.route('/')
 
 // Private/Admin routes
 router.route('/')
-  .post(auth, uploadMixed.any(), createTrack);
+  .post(auth, (req, res, next) => {
+    uploadMixed.any()(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(413).json({ message: 'File too large. Maximum file size is 200MB.' });
+        }
+        return res.status(400).json({ message: err.message });
+      } else if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  }, createTrack);
 
 router.route('/:id')
-  .patch(auth, uploadMixed.any(), updateTrack)
+  .patch(auth, (req, res, next) => {
+    uploadMixed.any()(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(413).json({ message: 'File too large. Maximum file size is 200MB.' });
+        }
+        return res.status(400).json({ message: err.message });
+      } else if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  }, updateTrack)
   .delete(auth, deleteTrack);
 
 module.exports = router;
