@@ -35,31 +35,19 @@ router.route('/')
 // Private/Admin routes
 // Custom middleware to handle CORS and multer errors properly
 const handleUpload = (req, res, next) => {
-  // Apply CORS headers before multer
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
-  
   uploadMixed.any()(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        // Ensure CORS headers are set even in error responses
-        res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
         return res.status(413).json({ 
           message: 'File too large. Maximum file size is 200MB.',
           error: 'FILE_TOO_LARGE'
         });
       }
-      // Ensure CORS headers are set even in error responses
-      res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
       return res.status(400).json({ 
         message: err.message,
         error: 'UPLOAD_ERROR'
       });
     } else if (err) {
-      // Ensure CORS headers are set even in error responses
-      res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
       return res.status(400).json({ 
         message: err.message,
         error: 'UPLOAD_ERROR'
