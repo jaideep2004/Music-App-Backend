@@ -33,7 +33,7 @@ router.route('/')
   .get(getTracks);
 
 // Private/Admin routes
-// Custom middleware to handle CORS and multer errors properly
+// Custom middleware to handle multer errors properly
 const handleUpload = (req, res, next) => {
   uploadMixed.any()(req, res, (err) => {
     if (err instanceof multer.MulterError) {
