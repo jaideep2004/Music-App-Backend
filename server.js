@@ -88,9 +88,45 @@ app.get('/test-cors', (req, res) => {
   });
 });
 
+// Test tracks endpoint CORS specifically
+app.post('/test-tracks-cors', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
+  
+  res.json({ 
+    message: 'Tracks CORS test successful!',
+    origin: req.headers.origin,
+    headers: req.headers
+  });
+});
+
 // Root route
 app.get('/', (req, res) => {
   res.json({ message: 'Music Platform API updated 16 oct v3' });
+});
+
+// Global error handler to ensure CORS headers are always set
+app.use((err, req, res, next) => {
+  // Ensure CORS headers are set even in error responses
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
+  
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'production' ? {} : err.message
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  // Ensure CORS headers are set even in 404 responses
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.status(404).json({ message: 'Route not found' });
 });
 
 // Server port
