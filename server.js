@@ -18,28 +18,22 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://orangemusicindia.com'], // Allow frontend origins
+  origin: ['http://localhost:5173', 'https://orangemusicindia.com', 'https://music-app-backend.cloud'], // Allow frontend origins
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-// Apply CORS middleware to all routes
-app.use(cors());
+// Apply CORS middleware with options to all routes
+app.use(cors(corsOptions));
 
 // Custom CORS headers for static files
-app.use('/uploads', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.header('Access-Control-Allow-Origin', 'https://orangemusicindia.com');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-}, express.static('uploads'));
+app.use('/uploads', cors(corsOptions), express.static('uploads'));
 
 // Middleware
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
-app.use(express.json({ limit: '50mb' })); // Parse JSON bodies
-// app.use(express.urlencoded({ extended: true, limit: '50mb' })); 
+app.use(express.json({ limit: '1000mb' })); // Increased limit for JSON bodies
+app.use(express.urlencoded({ extended: true, limit: '1000mb' })); // Increased limit for URL encoded data
 
 // Routes
 app.use('/api/auth', authRoutes);
