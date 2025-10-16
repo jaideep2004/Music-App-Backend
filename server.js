@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -16,33 +15,16 @@ connectDB();
 // Create Express app
 const app = express();
 
-// CORS configuration - more explicit to prevent duplicates
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:5173', 'https://orangemusicindia.com'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    // For production or other origins, you might want to set a default
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-  }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Disposition');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-    return;
-  }
-  
-  next();
-});
+// CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://orangemusicindia.com', 'https://music-app-backend.cloud'],
+  // credentials: true,
+  // optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 // Middleware
-app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
 app.use(express.json({ limit: '200mb' })); // Parse JSON bodies
 // app.use(express.urlencoded({ extended: true, limit: '50mb' })); 
