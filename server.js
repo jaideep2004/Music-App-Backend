@@ -16,30 +16,23 @@ connectDB();
 // Create Express app
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: ['http://localhost:5173', 'https://orangemusicindia.com', 'https://music-app-backend.cloud'], // Allow frontend origins
-  credentials: true,
-  optionsSuccessStatus: 200
-};
-
-// Apply CORS middleware with options to all routes
-app.use(cors(corsOptions));
+// CORS configuration - Allow all origins
+app.use(cors());
 
 // Custom CORS headers for static files
-app.use('/uploads', cors(corsOptions), express.static('uploads'));
+app.use('/uploads', cors(), express.static('uploads'));
 
-// Middleware - No limits
+// Middleware - Set limits for file uploads
 app.use(helmet()); // Security headers
 app.use(morgan('combined')); // Logging
-app.use(express.json()); // No limit for JSON bodies
-app.use(express.urlencoded({ extended: true })); // No limit for URL encoded data
+app.use(express.json()); // Increase JSON body limit
+app.use(express.urlencoded({ extended: true })); // Increase URL encoded data limit
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tracks', trackRoutes);
 app.get('/', (req, res) => {
-  res.json({ message: 'Music Platform API updated 16 oct v3' });
+  res.json({ message: 'Music Platform API updated 16 oct v4' });
 });
 
 // Server port

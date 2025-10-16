@@ -43,20 +43,23 @@ const imageFileFilter = (req, file, cb) => {
   }
 };
 
-// Multer upload instances - No limits
+// Multer upload instances - Set higher limits
 const uploadAudio = multer({ 
   storage: storage,
-  fileFilter: audioFileFilter
+  fileFilter: audioFileFilter,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit for audio files
 });
 
 const uploadImage = multer({ 
   storage: storage,
-  fileFilter: imageFileFilter
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 20 * 1024 * 1024 } // 20MB limit for image files
 });
 
-// Multer upload for mixed files (audio + image) - No limits
+// Multer upload for mixed files (audio + image) - Set higher limits
 const uploadMixed = multer({ 
-  storage: storage
+  storage: storage,
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit for mixed files
 });
 
 module.exports = {
