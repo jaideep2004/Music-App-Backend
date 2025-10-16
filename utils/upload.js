@@ -43,13 +43,14 @@ const imageFileFilter = (req, file, cb) => {
   }
 };
 
-// Multer upload instances - Set very high limits
+// Multer upload instances - Set maximum limits
 const uploadAudio = multer({ 
   storage: storage,
   fileFilter: audioFileFilter,
   limits: { 
     fileSize: 200 * 1024 * 1024, // 200MB limit for audio files
-    files: 1 // Only allow 1 file per request
+    files: 1, // Only allow 1 file per request
+    fieldSize: 200 * 1024 * 1024 // Field size limit
   }
 });
 
@@ -58,16 +59,18 @@ const uploadImage = multer({
   fileFilter: imageFileFilter,
   limits: { 
     fileSize: 50 * 1024 * 1024, // 50MB limit for image files
-    files: 1 // Only allow 1 file per request
+    files: 1, // Only allow 1 file per request
+    fieldSize: 50 * 1024 * 1024 // Field size limit
   }
 });
 
-// Multer upload for mixed files (audio + image) - Set very high limits
+// Multer upload for mixed files (audio + image) - Set maximum limits
 const uploadMixed = multer({ 
   storage: storage,
   limits: { 
     fileSize: 200 * 1024 * 1024, // 200MB limit for mixed files
-    files: 10 // Allow up to 10 files per request (for albums)
+    files: 10, // Allow up to 10 files per request (for albums)
+    fieldSize: 200 * 1024 * 1024 // Field size limit
   }
 });
 
