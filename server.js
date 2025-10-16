@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: true })); // No limit for URL encoded dat
 app.use('/api/auth', authRoutes);
 app.use('/api/tracks', trackRoutes);
 app.get('/', (req, res) => {
-  res.json({ message: 'Music Platform API updated 16 oct' });
+  res.json({ message: 'Music Platform API updated 16 oct v3' });
 });
 
 // Server port
