@@ -180,6 +180,7 @@ const createTrack = async (req, res) => {
       contributors,
       listenCount,
       publishDate, // Add publishDate
+      releaseDate, // Add releaseDate
       bitrate,
       duration,
       sampleRate,
@@ -249,6 +250,7 @@ const createTrack = async (req, res) => {
       contributors: parsedContributors,
       listenCount: listenCount ? parseInt(listenCount) : 0,
       publishDate: publishDate ? new Date(publishDate) : new Date(), // Add publishDate
+      releaseDate: releaseDate ? new Date(releaseDate) : undefined, // Add releaseDate
       coverImage,
       coverImageDimensions,
       album: album || null, // Set album reference if provided
@@ -290,7 +292,8 @@ const updateTrack = async (req, res) => {
       genre,
       contributors,
       listenCount,
-      publishDate
+      publishDate,
+      releaseDate // Add releaseDate
     } = req.body;
 
     // Parse contributors if it's a string
@@ -309,6 +312,7 @@ const updateTrack = async (req, res) => {
     track.contributors = parsedContributors;
     track.listenCount = listenCount !== undefined ? parseInt(listenCount) : track.listenCount;
     track.publishDate = publishDate ? new Date(publishDate) : track.publishDate; // Add publishDate
+    track.releaseDate = releaseDate ? new Date(releaseDate) : track.releaseDate; // Add releaseDate
 
     // Handle file uploads if any
     if (req.files) {

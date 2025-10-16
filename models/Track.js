@@ -39,6 +39,9 @@ const trackSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  releaseDate: {
+    type: Date
+  },
   coverImage: {
     type: String, // URL to the image
     required: false // Not required since we provide a placeholder
