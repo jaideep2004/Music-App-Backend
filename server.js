@@ -18,8 +18,10 @@ const app = express();
 // CORS configuration
 const corsOptions = {
   origin: ['http://localhost:5173', 'https://orangemusicindia.com', 'https://music-app-backend.cloud'],
-  // credentials: true,
-  // optionsSuccessStatus: 200
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
@@ -36,7 +38,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/tracks', trackRoutes);
 app.get('/', (req, res) => {
-  res.json({ message: 'Music Platform API updated 16 oct' });
+  res.json({ message: 'Music Platform API updated 16 oct v8' });
 });
 
 // Server port
