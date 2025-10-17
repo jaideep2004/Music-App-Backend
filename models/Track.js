@@ -9,7 +9,7 @@ const contributorSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true,
-    enum: ['Artist', 'Producer', 'Composer', 'Lyricist', 'Arranger', 'Engineer', 'Performer', 'Writer', 'Other']
+    enum: ['Artist', 'Producer', 'Composer', 'Lyricist', 'Arranger', 'Engineer', 'Performer', 'Label', 'Other']
   }
 });
 
