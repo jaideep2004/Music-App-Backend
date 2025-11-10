@@ -23,6 +23,7 @@ const corsOptions = {
     "https://audiolibrary.singleaudio.com",
     "https://audiolibrary.karharimedia.com",
     "https://music-app-backend.cloud",
+    "https://audiolibrary.bollywoodmusicindia.com/",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
